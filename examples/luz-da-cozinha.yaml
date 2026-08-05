@@ -1,0 +1,64 @@
+# O bloco original (4 `conditional` + 4 `custom:button-card`, ~120 linhas)
+# vira isto — mesma bolinha, mesmas cores, mesmo halo, mesma borda ciano:
+
+type: custom:mw-light-element
+entity: light.luz_da_cozinha
+name: LUZ DA COZINHA
+left: calc(100% - 55%)
+top: 14%
+
+---
+# Variante: posicionando pelo `style:` do próprio picture-elements
+# (útil quando o gerador de planta já escreve o style). Se as duas formas
+# aparecerem no mesmo elemento, a config vence.
+
+type: custom:mw-light-element
+entity: light.luz_da_cozinha
+name: LUZ DA COZINHA
+size: ""
+scale: ""
+style:
+  left: calc(100% - 55%)
+  top: 14%
+  width: 6vh
+  height: 6vh
+  transform: translate(-50%, -50%) scale(0.6)
+
+---
+# Luz RGB de verdade: a bolinha pega a cor da lâmpada e o halo cresce
+# junto com o brilho.
+
+type: custom:mw-light-element
+entity: light.fita_led_sala
+name: FITA LED DA SALA
+left: 38%
+top: 52%
+color_by_light: true
+glow_by_brightness: true
+
+---
+# Tomada / interruptor, com ícone próprio, bolinha maior e sem borda ciano
+# quando desligada:
+
+type: custom:mw-light-element
+entity: switch.tomada_da_varanda
+name: TOMADA DA VARANDA
+left: 62%
+top: 71%
+size: 8vh
+icon: mdi:power-socket-eu
+border_off: ""
+color_on: "#7fff00"
+tap_action: toggle
+hold_action: more-info
+
+---
+# Só sinalização: não liga nada no toque, o clique abre o histórico.
+
+type: custom:mw-light-element
+entity: light.luz_externa
+name: LUZ EXTERNA
+left: 12%
+top: 22%
+tap_action: more-info
+hold_action: none

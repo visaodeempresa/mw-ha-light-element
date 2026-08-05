@@ -1,0 +1,6 @@
+{
+  "name": "MW Light Element",
+  "filename": "mw-light-element.js",
+  "render_readme": true,
+  "homeassistant": "2024.4.0"
+}
