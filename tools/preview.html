@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- Bancada visual: abre no navegador (file://) e mostra o elemento nos quatro
+     modos dentro de um container que imita o picture-elements. `ha-icon` é
+     substituído por um stub, porque aqui não existe o frontend do HA.
+     Serve para conferir halo, borda, proporção e o redimensionamento. -->
+<meta charset="utf-8">
+<title>MW Light Element — bancada</title>
+<style>
+  body{margin:0;background:#0b1021;color:#cfd8e3;font:14px/1.5 system-ui,sans-serif}
+  h1{font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+     padding:14px 18px 0;margin:0;color:#8fa3bf}
+  .plan{position:relative;margin:14px auto;max-width:960px;aspect-ratio:16/9;
+        background:linear-gradient(135deg,#16203a,#0e1730 60%,#131c33);
+        border:1px solid #24304f;border-radius:10px;overflow:hidden}
+  .plan::before{content:"";position:absolute;inset:8%;border:1px dashed #2b3a5e;border-radius:6px}
+  .cap{position:absolute;transform:translate(-50%,0);font-size:11px;color:#7f8fa8;
+       letter-spacing:.06em;white-space:nowrap}
+  .bar{padding:0 18px 18px;display:flex;gap:10px;align-items:center}
+  button{background:#1c2946;color:#cfd8e3;border:1px solid #2f4066;border-radius:6px;
+         padding:6px 12px;cursor:pointer;font:inherit}
+</style>
+<h1>MW Light Element — bancada</h1>
+<div class="plan" id="plan"></div>
+<div class="bar">
+  <button onclick="toggle()">alternar ligada/apagada</button>
+  <button onclick="dim()">brilho 10% ↔ 100%</button>
+  <span id="log"></span>
+</div>
+
+<script>
+  // stub do ha-icon: só o glifo, o que importa aqui é a geometria
+  const GLYPH = { "mdi:lightbulb": "💡", "mdi:lightbulb-outline": "🔆",
+    "mdi:cancel": "🚫", "mdi:crosshairs-question": "❓" };
+  customElements.define("ha-icon", class extends HTMLElement {
+    static get observedAttributes() { return ["icon"]; }
+    attributeChangedCallback() { this.render(); }
+    connectedCallback() { this.render(); }
+    render() {
+      this.style.display = "grid";
+      this.style.placeItems = "center";
+      this.style.width = this.style.height = "var(--mdc-icon-size,24px)";
+      this.style.fontSize = "calc(var(--mdc-icon-size,24px) * .8)";
+      this.style.lineHeight = "1";
+      this.textContent = GLYPH[this.getAttribute("icon")] || "•";
+    }
+  });
+
+  const states = {
+    "light.cozinha": { state: "on", attributes: { friendly_name: "LUZ DA COZINHA", brightness: 255 } },
+    "light.suite": { state: "off", attributes: { friendly_name: "LUZ DA SUÍTE" } },
+    "light.fita": { state: "on", attributes: { friendly_name: "FITA LED", brightness: 255, rgb_color: [120, 90, 255] } },
+    "light.sumida": { state: "unavailable", attributes: {} },
+    "light.esquisita": { state: "banana", attributes: {} },
+  };
+  const hass = { states, callService: (d, s, x) => log.textContent = `${d}.${s} ${JSON.stringify(x)}` };
+  const els = [];
+</script>
+<!-- sempre a versão do disco, nunca a do cache -->
+<script>document.write('<scr' + 'ipt src="../dist/mw-light-element.js?v=' + Date.now() + '"><\/scr' + 'ipt>');</script>
+<script>
+  const plan = document.getElementById("plan");
+  const put = (cfg, cap) => {
+    const el = document.createElement("mw-light-element");
+    el.setConfig(cfg);
+    plan.appendChild(el);
+    el.hass = hass;
+    els.push(el);
+    const c = document.createElement("div");
+    c.className = "cap";
+    c.style.left = cfg.left; c.style.top = `calc(${cfg.top} + 6%)`;
+    c.textContent = cap;
+    plan.appendChild(c);
+  };
+  put({ entity: "light.cozinha", left: "12%", top: "28%" }, "ligada (padrão)");
+  put({ entity: "light.suite", left: "31%", top: "28%" }, "apagada");
+  put({ entity: "light.sumida", left: "50%", top: "28%" }, "indisponível");
+  put({ entity: "light.esquisita", left: "69%", top: "28%" }, "desconhecida");
+  put({ entity: "light.fita", left: "88%", top: "28%", color_by_light: true }, "cor da lâmpada");
+  put({ entity: "light.cozinha", left: "12%", top: "70%", effect: "neon" }, "neon");
+  put({ entity: "light.cozinha", left: "31%", top: "70%", effect: "soft" }, "suave");
+  put({ entity: "light.cozinha", left: "50%", top: "70%", effect: "flat" }, "chapado");
+  put({ entity: "light.cozinha", left: "69%", top: "70%", size: "9%" }, "size 9%");
+  put({ entity: "light.suite", left: "88%", top: "70%", size: "9%", effect: "neon" }, "9% neon");
+
+  const push = () => els.forEach((e) => { e._st = undefined; e.hass = hass; });
+  function toggle() {
+    states["light.cozinha"].state = states["light.cozinha"].state === "on" ? "off" : "on";
+    states["light.suite"].state = states["light.suite"].state === "on" ? "off" : "on";
+    push();
+  }
+  function dim() {
+    const b = states["light.cozinha"].attributes.brightness;
+    states["light.cozinha"].attributes.brightness = b === 255 ? 26 : 255;
+    push();
+  }
+</script>

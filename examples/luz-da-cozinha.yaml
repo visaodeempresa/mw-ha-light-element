@@ -1,5 +1,6 @@
 # O bloco original (4 `conditional` + 4 `custom:button-card`, ~120 linhas)
-# vira isto — mesma bolinha, mesmas cores, mesmo halo, mesma borda ciano:
+# vira isto — mesma leitura, agora com halo, anel proporcional e resposta
+# imediata ao toque:
 
 type: custom:mw-light-element
 entity: light.luz_da_cozinha
@@ -8,57 +9,65 @@ left: calc(100% - 55%)
 top: 14%
 
 ---
-# Variante: posicionando pelo `style:` do próprio picture-elements
-# (útil quando o gerador de planta já escreve o style). Se as duas formas
-# aparecerem no mesmo elemento, a config vence.
+# `size` é % da largura da planta: a luz acompanha a imagem em qualquer tela.
+# Uma bolinha maior, no efeito neon:
 
 type: custom:mw-light-element
-entity: light.luz_da_cozinha
-name: LUZ DA COZINHA
-size: ""
-scale: ""
-style:
-  left: calc(100% - 55%)
-  top: 14%
-  width: 6vh
-  height: 6vh
-  transform: translate(-50%, -50%) scale(0.6)
+entity: light.luz_da_sala
+name: LUZ DA SALA
+left: 38%
+top: 52%
+size: 7%
+effect: neon
 
 ---
-# Luz RGB de verdade: a bolinha pega a cor da lâmpada e o halo cresce
+# Luz RGB de verdade: a bolinha pega a cor da lâmpada e o halo respira
 # junto com o brilho.
 
 type: custom:mw-light-element
 entity: light.fita_led_sala
 name: FITA LED DA SALA
-left: 38%
-top: 52%
+left: 44%
+top: 61%
 color_by_light: true
 glow_by_brightness: true
 
 ---
-# Tomada / interruptor, com ícone próprio, bolinha maior e sem borda ciano
-# quando desligada:
+# Tomada / interruptor, com ícone próprio e sem o anel ciano quando desligada:
 
 type: custom:mw-light-element
 entity: switch.tomada_da_varanda
 name: TOMADA DA VARANDA
 left: 62%
 top: 71%
-size: 8vh
 icon: mdi:power-socket-eu
 border_off: ""
 color_on: "#7fff00"
-tap_action: toggle
-hold_action: more-info
 
 ---
 # Só sinalização: não liga nada no toque, o clique abre o histórico.
+# `flat` remove halo e vidro — útil quando a planta já é clara.
 
 type: custom:mw-light-element
 entity: light.luz_externa
 name: LUZ EXTERNA
 left: 12%
 top: 22%
+effect: flat
 tap_action: more-info
 hold_action: none
+
+---
+# Posicionando pelo `style:` do próprio picture-elements
+# (zere o `size`, senão a config vence):
+
+type: custom:mw-light-element
+entity: light.luz_da_cozinha
+name: LUZ DA COZINHA
+size: ""
+style:
+  left: calc(100% - 55%)
+  top: 14%
+  width: 4%
+  aspect-ratio: 1
+  transform: translate(-50%, -50%)
