@@ -19,13 +19,13 @@ top: 14%
 > É um **elemento**, não um card: só funciona dentro de
 > `type: picture-elements` (na lista `elements:`).
 
-## Por que é rápido (v0.2)
+## Por que é rápido (v1.0)
 
 O gargalo de uma planta com dezenas de luzes não é desenhar — é **quantas
 vezes** se desenha. O Home Assistant empurra o objeto `hass` inteiro para
 todo elemento a **cada mudança de qualquer entidade** da casa.
 
-| | Antes (bloco YAML / v0.1) | Agora |
+| | Antes (bloco YAML / v0.1) | Agora (v1.0) |
 |---|---|---|
 | mudou outra entidade | 4 `conditional` reavaliam + card redesenha | compara a referência do `state` e sai — **O(1)** |
 | mudou a própria luz | `button-card` remonta o card inteiro | troca 1 atributo + ~8 custom properties |
@@ -196,7 +196,7 @@ para o HA.
 Push na `main` tocando `dist/**` ou `hacs.json` → bump semântico → tag →
 Release → o HACS avisa a atualização.
 
-## Pendente (v0.3.0)
+## Pendente
 
 - Geração automática dos elementos a partir da planta, no MW Floorplan Studio.
 - Slider de brilho no arrastar vertical (opcional, desligado por padrão).
