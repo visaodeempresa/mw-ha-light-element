@@ -2,7 +2,7 @@
  * Elemento de picture-elements: a luz na planta, pintada pelo estado
  * (ligada / apagada / indisponível / desconhecido).
  *
- * v0.2 — reescrito para velocidade:
+ * v1.0 — reescrito para velocidade:
  *  · DOM montado UMA vez; atualizar = trocar atributo + custom properties
  *    (zero innerHTML, zero re-parse de CSS, zero recriação de <ha-icon>);
  *  · folha de estilo única compartilhada por TODAS as instâncias
