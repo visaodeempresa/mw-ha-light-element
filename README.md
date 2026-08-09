@@ -70,6 +70,29 @@ picture-elements suporta elementos custom, editar a luz abre um formulário
 em pt-BR (entidade, geometria, efeito, cores, ações) em vez de YAML cru.
 Onde não houver suporte, o YAML continua valendo — nada se perde.
 
+## Identidade no editor
+
+Na lista de elementos do editor visual do `picture-elements`, este elemento
+aparece como **Luz** — e não mais como `custom:mw-light-element` /
+`Unknown type`. A segunda linha é o `title:` da config; sem título, o
+`friendly_name` da entidade:
+
+```yaml
+type: custom:mw-light-element
+entity: light.exemplo
+title: 🏠 Luz da cozinha      # só o editor lê; não vira tooltip nem desenho
+```
+
+O `title:` é opcional e não muda nada na planta — quem faz o tooltip continua
+sendo `name:`. O mesmo nome aparece no cabeçalho do sub-editor
+(“Editor de elemento Luz”).
+
+Detalhe técnico: o HA não tem registro público para elementos de
+picture-elements (só para card, badge e feature), então o nome vem do bloco
+compartilhado `mw-element-identity v1`, que responde à chave de tradução do
+tipo. Se um dia o HA mudar isso, o elemento volta a mostrar o tipo cru e
+**nada mais muda** — não é caminho de render.
+
 ## Estados
 
 O estado é resolvido para quatro modos, o que faz o elemento servir também
