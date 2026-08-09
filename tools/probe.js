@@ -230,5 +230,38 @@ let threw = false;
 try { new reg["mw-light-element"]().setConfig({}); } catch (e) { threw = true; }
 check("setConfig sem entity falha", threw);
 
+console.log("identidade no editor:");
+/* A lista do editor do picture-elements desenha cada linha com
+ *   localize("…element_types.${type}") || type      → primeira linha
+ *   _getSecondaryDescription(element)                → segunda linha
+ * O bloco mw-element-identity v1 responde à primeira; a segunda vem do
+ * `title:` da config. Aqui conferimos o que dá para conferir sem browser.
+ */
+const MW_PREFIX = "ui.panel.lovelace.editor.card.picture-elements.element_types.";
+const MW_TYPE = "custom:mw-light-element";
+check("elemento registrado no window.mwPictureElements",
+  (global.window.mwPictureElements || []).some(
+    (e) => e.type === MW_TYPE && e.name === "Luz"),
+  JSON.stringify(global.window.mwPictureElements));
+
+const hassId = { states: {}, localize: (k) => (k === "ui.common.delete" ? "Excluir" : "") };
+new reg["mw-light-element"]().hass = hassId;      // é o `set hass` que instala o embrulho
+check("a lista mostra o nome amigável em vez do tipo cru",
+  (hassId.localize(MW_PREFIX + MW_TYPE) || MW_TYPE) === "Luz",
+  hassId.localize(MW_PREFIX + MW_TYPE));
+check("tipo de terceiro continua cru",
+  (hassId.localize(MW_PREFIX + "custom:outra-coisa") || "custom:outra-coisa")
+  === "custom:outra-coisa");
+check("chave de fora do prefixo passa intacta",
+  hassId.localize("ui.common.delete") === "Excluir");
+
+const mwSrc = require("fs").readFileSync(
+  require("path").join(__dirname, "..", "dist", "mw-light-element.js"), "utf8");
+check("campo de título no schema do editor",
+  mwSrc.split("MW_TITLE_FIELD").length - 1 >= 2,
+  "MW_TITLE_FIELD tem de ser usado no SCHEMA, não só definido");
+check("rótulo do título nos LABELS",
+  mwSrc.split("MW_TITLE_LABEL").length - 1 >= 2);
+
 console.log(fails ? `\n${fails} verificação(ões) falharam` : "\ntudo ok");
 process.exit(fails ? 1 : 0);
