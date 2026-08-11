@@ -15,13 +15,17 @@ on:
     paths:
       - "dist/**"
       - "hacs.json"
+  # botão manual para o caso em que a esteira chegou DEPOIS do merge: o push
+  # que mudou o dist não tinha este workflow, e a release ficaria órfã até o
+  # próximo commit no componente. Não é release à mão — é o mesmo cálculo.
+  workflow_dispatch:
 
 jobs:
   auto-release:
     name: Bump, tag & release
     runs-on: ubuntu-latest
     # não re-disparar sobre o commit de bump feito pelo próprio bot
-    if: "!contains(github.event.head_commit.message, '[skip release]')"
+    if: "github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip release]')"
     permissions:
       contents: write
     steps:
